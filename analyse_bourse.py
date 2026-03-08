@@ -432,6 +432,59 @@ def main(ticker: str = "MSFT", send_alert: bool = True):
 
 
 # ==========================================
+# 8. REQUIREMENTS
+# ==========================================
+def get_requirements() -> List[Dict[str, str]]:
+    """
+    Retourne la liste des dépendances nécessaires
+    """
+    return [
+        {"name": "yfinance", "version": ">=0.2.0", "description": "Données boursières"},
+        {"name": "pandas", "version": ">=1.5.0", "description": "Manipulation de données"},
+        {"name": "numpy", "version": ">=1.21.0", "description": "Calculs numériques"},
+        {"name": "scikit-learn", "version": ">=1.0.0", "description": "Machine Learning"},
+        {"name": "joblib", "version": ">=1.2.0", "description": "Sauvegarde modèle"},
+        {"name": "requests", "version": ">=2.28.0", "description": "API Telegram"},
+        {"name": "transformers", "version": ">=4.30.0", "description": "FinBERT (NLP)"},
+        {"name": "torch", "version": ">=2.0.0", "description": "Backend FinBERT"},
+    ]
+
+
+def requirements():
+    """Affiche les dépendances requises"""
+    print("\n" + "="*50)
+    print("📦 DÉPENDANCES REQUISES")
+    print("="*50)
+    
+    deps = get_requirements()
+    for dep in deps:
+        print(f"  • {dep['name']} {dep['version']}")
+        print(f"    └─ {dep['description']}")
+    
+    print("\n💾 Installation:")
+    print("  pip install -r requirements.txt")
+    print("="*50 + "\n")
+
+
+def generate_requirements_file(filename: str = "requirements.txt"):
+    """Génère un fichier requirements.txt"""
+    deps = get_requirements()
+    
+    content = "# Requirements - Analyse Bourse IA\n"
+    content += "# Generated automatically\n\n"
+    
+    for dep in deps:
+        content += f"{dep['name']}{dep['version']}\n"
+    
+    try:
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write(content)
+        print(f"✅ Fichier {filename} généré avec succès!")
+    except Exception as e:
+        print(f"❌ Erreur lors de la génération: {e}")
+
+
+# ==========================================
 # EXÉCUTION
 # ==========================================
 if __name__ == "__main__":
@@ -440,8 +493,15 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Analyse Bourse IA')
     parser.add_argument('--ticker', type=str, default='MSFT', help='Symbole boursier')
     parser.add_argument('--no-alert', action='store_true', help='Désactiver les alertes Telegram')
+    parser.add_argument('--requirements', action='store_true', help='Afficher les dépendances requises')
+    parser.add_argument('--generate-requirements', action='store_true', help='Générer un fichier requirements.txt')
     
     args = parser.parse_args()
     
-    main(ticker=args.ticker.upper(), send_alert=not args.no_alert)
+    if args.requirements:
+        requirements()
+    elif args.generate_requirements:
+        generate_requirements_file()
+    else:
+        main(ticker=args.ticker.upper(), send_alert=not args.no_alert)
 
